@@ -259,6 +259,7 @@ export default function Login({ onLogin }: LoginProps) {
             </button>
           </p>
         </div>
+      </div>
     </div>
   );
 }
