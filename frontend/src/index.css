@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/* ── Custom Design Tokens ──────────────────────────────── */
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #111827;
+  --bg-card: #1a1f35;
+  --bg-card-hover: #222845;
+  --bg-input: #151b30;
+  --border-color: #2a3050;
+  --border-accent: #6366f1;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-indigo: #6366f1;
+  --accent-violet: #8b5cf6;
+  --accent-cyan: #22d3ee;
+  --accent-emerald: #34d399;
+  --accent-amber: #fbbf24;
+  --accent-rose: #f43f5e;
+  --gradient-primary: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
+  --gradient-glow: linear-gradient(135deg, #6366f1 0%, #22d3ee 100%);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-indigo);
+}
+
+/* ── Animations ────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bg-card) 25%,
+    var(--bg-card-hover) 50%,
+    var(--bg-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Aqua & Jungle Green Theme (Light) */
+body.theme4-light {
+  --bg-primary: linear-gradient(135deg, #ffffff 0%, #e0f7fa 100%);
+  --bg-secondary: #ffffff;
+  --bg-card: rgb(255, 255, 255);
+  --bg-card-hover: #e0f7fa;
+  --bg-input: #ffffff;
+  --border-color: #80deea;
+  --border-accent: #00bbcd;
+  --text-primary: #00363a;
+  --text-secondary: #265d63;
+  --text-muted: #005864;
+  --accent-indigo: #00acc1;
+  --accent-violet: #68cddb;
+  --accent-cyan: #00bbcd;
+  --accent-emerald: #4dd0e1;
+  --accent-amber: #005864;
+  --accent-rose: #001a1b;
+  --gradient-primary: radial-gradient(circle farthest-corner at -5.6% -6.8%, #00acc1 37.3%, #68cddb 73.5%);
+  --gradient-glow: radial-gradient(circle farthest-corner at -5.6% -6.8%, rgb(0, 150, 171) 37.3%, #80deea 73.5%);
+  --shadow-glow: 0 0 20px rgba(0, 172, 193, 0.3);
+  --shadow-card: 0 4px 24px rgba(0, 96, 100, 0.1);
+}
+
+/* Aqua & Jungle Green Theme (Dark) */
+body.theme4-dark {
+  --bg-primary: linear-gradient(135deg, #0d1f1f 0%, #1a3c40 100%);
+  --bg-secondary: #0d1f1f;
+  --bg-card: rgb(13, 31, 31);
+  --bg-card-hover: #163032;
+  --bg-input: #1a3c40;
+  --border-color: #00838f;
+  --border-accent: #4dd0e1;
+  --text-primary: #e0f7fa;
+  --text-secondary: #b2ebf2;
+  --text-muted: #80deea;
+  --accent-indigo: #4dd0e1;
+  --accent-violet: #80deea;
+  --accent-cyan: #b2ebf2;
+  --accent-emerald: #00bbcd;
+  --accent-amber: #80deea;
+  --accent-rose: #f0fdff;
+  --gradient-primary: radial-gradient(circle farthest-corner at -5.6% -6.8%, #006064 37.3%, #00838f 73.5%);
+  --gradient-glow: radial-gradient(circle farthest-corner at -5.6% -6.8%, rgb(0, 112, 119) 37.3%, #006064 73.5%);
+  --shadow-glow: 0 0 20px rgba(77, 208, 225, 0.2);
+  --shadow-card: 0 4px 24px rgba(13, 31, 31, 0.5);
+}
