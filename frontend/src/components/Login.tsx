@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { FaBrain } from "react-icons/fa";
+import { FaBrain, FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 
 interface LoginProps {
   onLogin: () => void;
 }
 
 export default function Login({ onLogin }: LoginProps) {
+  const [isRegister, setIsRegister] = useState(false);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -13,7 +15,7 @@ export default function Login({ onLogin }: LoginProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate login delay
+    // Simulate API delay
     setTimeout(() => {
       setLoading(false);
       onLogin();
@@ -65,13 +67,13 @@ export default function Login({ onLogin }: LoginProps) {
           position: "relative",
           zIndex: 10,
           width: "100%",
-          maxWidth: "420px",
+          maxWidth: "440px",
           padding: "40px 32px",
           background: "rgba(26, 31, 53, 0.6)",
-          backdropFilter: "blur(20px)",
+          backdropFilter: "blur(24px)",
           border: "1px solid rgba(255, 255, 255, 0.05)",
-          borderRadius: "24px",
-          boxShadow: "0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1)",
+          borderRadius: "28px",
+          boxShadow: "0 24px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)",
         }}
         className="animate-fade-in-up"
       >
@@ -82,95 +84,118 @@ export default function Login({ onLogin }: LoginProps) {
               height: "64px",
               margin: "0 auto 20px",
               background: "var(--gradient-primary)",
-              borderRadius: "16px",
+              borderRadius: "18px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               boxShadow: "var(--shadow-glow)",
+              transform: "rotate(-5deg)",
             }}
           >
             <FaBrain size={32} color="#fff" />
           </div>
           <h1
             style={{
-              fontSize: "28px",
+              fontSize: "30px",
               fontWeight: 800,
               background: "var(--gradient-glow)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               marginBottom: "8px",
+              letterSpacing: "-0.5px",
             }}
           >
-            Welcome to X-LLM
+            {isRegister ? "Create Account" : "Welcome Back"}
           </h1>
-          <p style={{ color: "var(--text-secondary)", fontSize: "14px" }}>
-            Sign in to experience Explainable Generative AI.
+          <p style={{ color: "var(--text-secondary)", fontSize: "15px", lineHeight: "1.5" }}>
+            {isRegister 
+              ? "Join the future of transparent AI interaction." 
+              : "Sign in to access your explainable AI workspace."}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+          {isRegister && (
+            <div className="animate-fade-in">
+              <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "8px", marginLeft: "4px" }}>
+                Full Name
+              </label>
+              <div style={{ position: "relative" }}>
+                <FaUser style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "rgba(255,255,255,0.3)" }} />
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="John Doe"
+                  style={{
+                    width: "100%",
+                    padding: "14px 16px 14px 42px",
+                    borderRadius: "14px",
+                    background: "var(--bg-input)",
+                    border: "1px solid var(--border-color)",
+                    color: "var(--text-primary)",
+                    fontSize: "15px",
+                    outline: "none",
+                    transition: "all 0.2s",
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
           <div>
-            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "8px" }}>
+            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "8px", marginLeft: "4px" }}>
               Email Address
             </label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              style={{
-                width: "100%",
-                padding: "14px 16px",
-                borderRadius: "12px",
-                background: "var(--bg-input)",
-                border: "1px solid var(--border-color)",
-                color: "var(--text-primary)",
-                fontSize: "15px",
-                outline: "none",
-                transition: "all 0.2s",
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = "var(--accent-indigo)";
-                e.currentTarget.style.boxShadow = "0 0 0 2px rgba(99,102,241,0.2)";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "var(--border-color)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-            />
+            <div style={{ position: "relative" }}>
+              <FaEnvelope style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "rgba(255,255,255,0.3)" }} />
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                style={{
+                  width: "100%",
+                  padding: "14px 16px 14px 42px",
+                  borderRadius: "14px",
+                  background: "var(--bg-input)",
+                  border: "1px solid var(--border-color)",
+                  color: "var(--text-primary)",
+                  fontSize: "15px",
+                  outline: "none",
+                  transition: "all 0.2s",
+                }}
+              />
+            </div>
           </div>
 
           <div>
-            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "8px" }}>
+            <label style={{ display: "block", fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "8px", marginLeft: "4px" }}>
               Password
             </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              style={{
-                width: "100%",
-                padding: "14px 16px",
-                borderRadius: "12px",
-                background: "var(--bg-input)",
-                border: "1px solid var(--border-color)",
-                color: "var(--text-primary)",
-                fontSize: "15px",
-                outline: "none",
-                transition: "all 0.2s",
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = "var(--accent-indigo)";
-                e.currentTarget.style.boxShadow = "0 0 0 2px rgba(99,102,241,0.2)";
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = "var(--border-color)";
-                e.currentTarget.style.boxShadow = "none";
-              }}
-            />
+            <div style={{ position: "relative" }}>
+              <FaLock style={{ position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)", color: "rgba(255,255,255,0.3)" }} />
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                style={{
+                  width: "100%",
+                  padding: "14px 16px 14px 42px",
+                  borderRadius: "14px",
+                  background: "var(--bg-input)",
+                  border: "1px solid var(--border-color)",
+                  color: "var(--text-primary)",
+                  fontSize: "15px",
+                  outline: "none",
+                  transition: "all 0.2s",
+                }}
+              />
+            </div>
           </div>
 
           <button
@@ -179,13 +204,13 @@ export default function Login({ onLogin }: LoginProps) {
             style={{
               width: "100%",
               padding: "16px",
-              marginTop: "8px",
+              marginTop: "10px",
               background: loading ? "var(--bg-card-hover)" : "var(--gradient-primary)",
               color: "#fff",
               border: "none",
-              borderRadius: "12px",
+              borderRadius: "14px",
               fontSize: "16px",
-              fontWeight: 600,
+              fontWeight: 700,
               cursor: loading ? "not-allowed" : "pointer",
               transition: "all 0.3s",
               display: "flex",
@@ -198,8 +223,8 @@ export default function Login({ onLogin }: LoginProps) {
             {loading ? (
               <div
                 style={{
-                  width: "20px",
-                  height: "20px",
+                  width: "22px",
+                  height: "22px",
                   border: "2px solid rgba(255,255,255,0.3)",
                   borderTopColor: "#fff",
                   borderRadius: "50%",
@@ -207,11 +232,37 @@ export default function Login({ onLogin }: LoginProps) {
                 className="animate-spin"
               />
             ) : (
-              "Sign In"
+              isRegister ? "Create Account" : "Sign In"
             )}
           </button>
         </form>
+
+        <div style={{ marginTop: "24px", textAlign: "center" }}>
+          <p style={{ color: "var(--text-secondary)", fontSize: "14px" }}>
+            {isRegister ? "Already have an account?" : "Don't have an account?"}{" "}
+            <button
+              onClick={() => setIsRegister(!isRegister)}
+              style={{
+                background: "none",
+                border: "none",
+                color: "var(--accent-indigo)",
+                fontWeight: 700,
+                cursor: "pointer",
+                padding: "0 4px",
+                fontSize: "14px",
+                transition: "opacity 0.2s",
+              }}
+              onMouseOver={(e) => (e.currentTarget.style.opacity = "0.8")}
+              onMouseOut={(e) => (e.currentTarget.style.opacity = "1")}
+            >
+              {isRegister ? "Sign In" : "Register Now"}
+            </button>
+          </p>
+        </div>
       </div>
     </div>
+  );
+}
+
   );
 }

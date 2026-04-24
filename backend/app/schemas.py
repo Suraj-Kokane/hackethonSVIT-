@@ -45,6 +45,7 @@ class QueryResponse(BaseModel):
     bias_warnings: List[str] = []
     transparency_report: Optional[TransparencyReport] = None
     evaluation: Optional[EvalMetrics] = None
+    image_url: Optional[str] = None
     conversation_id: str = ""
 
 

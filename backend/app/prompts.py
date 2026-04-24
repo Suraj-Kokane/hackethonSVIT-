@@ -47,7 +47,8 @@ Your output must prioritize Transparency and Interpretability, following the pri
   "confidence": <float between 0.0 and 1.0>,
   "bias_warnings": [
     "Type: Temporal | Explanation: ... | Fix: ..."
-  ]
+  ],
+  "image_prompt": "<ONLY if requested or highly relevant, provide a detailed prompt for image generation (e.g., 'a futuristic city with neon lights'). Otherwise, use null.>"
 }
 
 RULES:

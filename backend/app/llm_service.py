@@ -108,6 +108,13 @@ def generate_response(query: str, explainability: bool = True) -> QueryResponse:
     transparency_raw = data.get("transparency_report", {})
     confidence = float(data.get("confidence", 0.5))
     bias_warnings = data.get("bias_warnings", [])
+    image_prompt = data.get("image_prompt")
+
+    # Generate image if prompt is present
+    image_url = None
+    if image_prompt and image_prompt.lower() != "null":
+        from app.image_service import generate_image_url
+        image_url = generate_image_url(image_prompt)
 
     causal_trace = None
     if explainability and causal_raw:
@@ -148,4 +155,5 @@ def generate_response(query: str, explainability: bool = True) -> QueryResponse:
         bias_warnings=bias_warnings if explainability else [],
         transparency_report=transparency_report,
         evaluation=evaluation,
+        image_url=image_url,
     )

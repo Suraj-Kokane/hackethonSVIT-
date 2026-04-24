@@ -28,6 +28,7 @@ export interface QueryResponse {
   bias_warnings: string[];
   transparency_report: TransparencyReport | null;
   evaluation: EvalMetrics | null;
+  image_url?: string | null;
   conversation_id: string;
 }
 

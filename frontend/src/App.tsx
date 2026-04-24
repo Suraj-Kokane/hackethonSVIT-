@@ -15,6 +15,7 @@ import BiasWarnings from "./components/BiasWarnings";
 import TransparencyReportSection from "./components/TransparencyReportSection";
 import NarrativeExplanation from "./components/NarrativeExplanation";
 import ConversationLogs from "./components/ConversationLogs";
+import ImageResult from "./components/ImageResult";
 import { sendQuery } from "./api";
 import type { ChatMessage } from "./types";
 
@@ -287,6 +288,11 @@ export default function App() {
                               answer={msg.response.answer}
                               confidence={msg.response.confidence}
                             />
+
+                            {/* Generated Image */}
+                            {msg.response.image_url && (
+                              <ImageResult imageUrl={msg.response.image_url} />
+                            )}
 
                             {/* Narrative Explanation */}
                             {msg.response.explanation && (
