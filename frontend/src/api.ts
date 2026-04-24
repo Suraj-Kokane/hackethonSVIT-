@@ -2,7 +2,9 @@
 
 import type { QueryResponse, ConversationEntry } from "./types";
 
-const BASE_URL = "";  // proxied by Vite dev server
+// In dev: empty string (Vite proxy forwards /api → localhost:8000)
+// In prod: set VITE_API_URL to your deployed backend URL
+const BASE_URL = import.meta.env.VITE_API_URL ?? "";
 
 export async function sendQuery(
   query: string,
@@ -50,5 +52,26 @@ export async function clearLogs(): Promise<void> {
 export async function healthCheck(): Promise<{ status: string; api_key_set: boolean }> {
   const res = await fetch(`${BASE_URL}/health`);
   if (!res.ok) throw new Error("Backend unreachable");
+  return res.json();
+}
+
+export async function fetchTTS(
+  text: string,
+  lang: string = "en"
+): Promise<{ audio_base64: string; format: string }> {
+  const formData = new FormData();
+  formData.append("text", text);
+  formData.append("lang", lang);
+
+  const res = await fetch(`${BASE_URL}/api/tts`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(typeof err.detail === "string" ? err.detail : "TTS request failed");
+  }
+
   return res.json();
 }

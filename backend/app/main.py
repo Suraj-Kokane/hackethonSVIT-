@@ -104,3 +104,22 @@ async def get_logs():
 async def clear_logs():
     conversation_logs.clear()
     return {"status": "cleared"}
+
+
+# ── Text-to-Speech endpoint ─────────────────────────────
+@app.post("/api/tts")
+async def text_to_speech(text: str = Form(...), lang: str = Form("en")):
+    """Convert text to speech and return base64-encoded MP3 audio."""
+    from app.tts_service import text_to_speech_base64
+
+    if not text.strip():
+        raise HTTPException(status_code=400, detail="Text cannot be empty.")
+
+    # Truncate very long texts to avoid TTS timeouts (max ~2000 chars)
+    truncated = text[:2000]
+    audio_b64 = text_to_speech_base64(truncated, lang=lang)
+
+    if not audio_b64:
+        raise HTTPException(status_code=502, detail="TTS generation failed.")
+
+    return {"audio_base64": audio_b64, "format": "mp3"}

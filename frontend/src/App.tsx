@@ -16,6 +16,7 @@ import TransparencyReportSection from "./components/TransparencyReportSection";
 import NarrativeExplanation from "./components/NarrativeExplanation";
 import ConversationLogs from "./components/ConversationLogs";
 import ImageResult from "./components/ImageResult";
+import AudioPlayback from "./components/AudioPlayback";
 import { sendQuery } from "./api";
 import type { ChatMessage } from "./types";
 
@@ -288,6 +289,9 @@ export default function App() {
                               answer={msg.response.answer}
                               confidence={msg.response.confidence}
                             />
+
+                            {/* Audio Playback */}
+                            <AudioPlayback text={msg.response.answer} />
 
                             {/* Generated Image */}
                             {msg.response.image_url && (

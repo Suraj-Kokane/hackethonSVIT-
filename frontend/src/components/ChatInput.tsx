@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { FiSend, FiPaperclip, FiX } from "react-icons/fi";
+import { FiSend, FiPaperclip, FiX, FiMic, FiMicOff } from "react-icons/fi";
 import { HiSparkles } from "react-icons/hi2";
+import { useVoiceRecorder } from "../hooks/useVoiceRecorder";
 
 interface ChatInputProps {
   onSend: (query: string, file?: File) => void;
@@ -14,6 +15,16 @@ export default function ChatInput({ onSend, loading, explainability }: ChatInput
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const voice = useVoiceRecorder();
+
+  // Sync voice transcript into the input
+  useEffect(() => {
+    if (voice.transcript || voice.interimTranscript) {
+      const combined = (voice.transcript + " " + voice.interimTranscript).trim();
+      setQuery(combined);
+    }
+  }, [voice.transcript, voice.interimTranscript]);
+
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
@@ -25,6 +36,9 @@ export default function ChatInput({ onSend, loading, explainability }: ChatInput
   const handleSubmit = () => {
     const trimmed = query.trim();
     if ((!trimmed && !file) || loading) return;
+    // Stop listening if mic is on
+    if (voice.isListening) voice.stopListening();
+    voice.clearTranscript();
     onSend(trimmed, file || undefined);
     setQuery("");
     setFile(null);
@@ -51,6 +65,16 @@ export default function ChatInput({ onSend, loading, explainability }: ChatInput
     }
   };
 
+  const handleMicToggle = () => {
+    if (voice.isListening) {
+      voice.stopListening();
+    } else {
+      voice.clearTranscript();
+      setQuery("");
+      voice.startListening();
+    }
+  };
+
   return (
     <div
       style={{
@@ -67,6 +91,66 @@ export default function ChatInput({ onSend, loading, explainability }: ChatInput
           position: "relative",
         }}
       >
+        {/* Voice Error Toast */}
+        {voice.error && (
+          <div
+            className="animate-fade-in-up"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "8px 14px",
+              background: "rgba(244, 63, 94, 0.15)",
+              border: "1px solid rgba(244, 63, 94, 0.3)",
+              borderRadius: "10px",
+              marginBottom: "8px",
+              fontSize: "12px",
+              color: "var(--accent-rose)",
+            }}
+          >
+            <FiMicOff size={14} />
+            {voice.error}
+            <button
+              onClick={() => voice.clearTranscript()}
+              style={{
+                marginLeft: "auto",
+                background: "none",
+                border: "none",
+                color: "var(--accent-rose)",
+                cursor: "pointer",
+                display: "flex",
+              }}
+            >
+              <FiX size={14} />
+            </button>
+          </div>
+        )}
+
+        {/* Listening Indicator */}
+        {voice.isListening && (
+          <div
+            className="animate-fade-in-up"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              padding: "10px 14px",
+              background: "rgba(99, 102, 241, 0.1)",
+              border: "1px solid rgba(99, 102, 241, 0.25)",
+              borderRadius: "12px",
+              marginBottom: "8px",
+            }}
+          >
+            <div className="voice-pulse-ring" />
+            <span style={{ fontSize: "13px", color: "var(--accent-indigo)", fontWeight: 600 }}>
+              Listening…
+            </span>
+            <span style={{ fontSize: "12px", color: "var(--text-muted)", fontStyle: "italic" }}>
+              {voice.interimTranscript || "Speak now"}
+            </span>
+          </div>
+        )}
+
         {/* File Preview */}
         {file && (
           <div
@@ -109,11 +193,15 @@ export default function ChatInput({ onSend, loading, explainability }: ChatInput
             alignItems: "flex-end",
             gap: "12px",
             background: "var(--bg-card)",
-            border: "1px solid var(--border-color)",
+            border: voice.isListening
+              ? "1px solid var(--accent-indigo)"
+              : "1px solid var(--border-color)",
             borderRadius: "16px",
             padding: "12px 16px",
-            boxShadow: "var(--shadow-card)",
-            transition: "border-color 0.2s",
+            boxShadow: voice.isListening
+              ? "0 0 20px rgba(99, 102, 241, 0.15)"
+              : "var(--shadow-card)",
+            transition: "border-color 0.2s, box-shadow 0.3s",
           }}
         >
           <input
@@ -157,7 +245,7 @@ export default function ChatInput({ onSend, loading, explainability }: ChatInput
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask anything or upload a file…"
+            placeholder={voice.isListening ? "Listening… speak now" : "Ask anything or upload a file…"}
             rows={1}
             disabled={loading}
             style={{
@@ -173,6 +261,59 @@ export default function ChatInput({ onSend, loading, explainability }: ChatInput
               maxHeight: "160px",
             }}
           />
+
+          {/* Microphone Button */}
+          {voice.isSupported && (
+            <button
+              id="mic-button"
+              onClick={handleMicToggle}
+              disabled={loading}
+              title={voice.isListening ? "Stop listening" : "Start voice input"}
+              style={{
+                width: "42px",
+                height: "42px",
+                borderRadius: "12px",
+                border: "none",
+                background: voice.isListening
+                  ? "var(--accent-rose)"
+                  : "var(--bg-input)",
+                color: voice.isListening ? "#fff" : "var(--text-secondary)",
+                cursor: loading ? "not-allowed" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "all 0.25s ease",
+                flexShrink: 0,
+                position: "relative",
+                overflow: "hidden",
+              }}
+              onMouseOver={(e) => {
+                if (!voice.isListening) {
+                  e.currentTarget.style.background = "var(--bg-card-hover)";
+                  e.currentTarget.style.color = "var(--text-primary)";
+                }
+              }}
+              onMouseOut={(e) => {
+                if (!voice.isListening) {
+                  e.currentTarget.style.background = "var(--bg-input)";
+                  e.currentTarget.style.color = "var(--text-secondary)";
+                }
+              }}
+            >
+              {voice.isListening && (
+                <span
+                  className="mic-pulse"
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    borderRadius: "12px",
+                    border: "2px solid var(--accent-rose)",
+                  }}
+                />
+              )}
+              {voice.isListening ? <FiMicOff size={18} /> : <FiMic size={18} />}
+            </button>
+          )}
 
           <button
             id="send-button"

@@ -120,6 +120,46 @@ body {
   animation: spin 1s linear infinite;
 }
 
+/* ── Voice / Mic Animations ───────────────────────────── */
+@keyframes micPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes voicePulseRing {
+  0% {
+    width: 10px;
+    height: 10px;
+    opacity: 1;
+    box-shadow: 0 0 6px var(--accent-indigo);
+  }
+  100% {
+    width: 24px;
+    height: 24px;
+    opacity: 0;
+    box-shadow: 0 0 16px var(--accent-indigo);
+  }
+}
+
+.mic-pulse {
+  animation: micPulse 1.2s ease-in-out infinite;
+}
+
+.voice-pulse-ring {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-indigo);
+  animation: voicePulseRing 1.4s ease-out infinite;
+  flex-shrink: 0;
+}
+
 /* Aqua & Jungle Green Theme (Light) */
 body.theme4-light {
   --bg-primary: linear-gradient(135deg, #ffffff 0%, #e0f7fa 100%);
