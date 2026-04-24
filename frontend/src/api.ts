@@ -4,7 +4,7 @@ import type { QueryResponse, ConversationEntry } from "./types";
 
 // In dev: empty string (Vite proxy forwards /api → localhost:8000)
 // In prod: set VITE_API_URL to your deployed backend URL
-const BASE_URL = import.meta.env.VITE_API_URL ?? "https://hackethon-svit-d9xm.vercel.app";
+const BASE_URL = import.meta.env.VITE_API_URL ?? "https://xllm-svit.vercel.app";
 
 export async function sendQuery(
   query: string,
