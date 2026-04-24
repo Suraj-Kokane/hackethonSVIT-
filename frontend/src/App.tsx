@@ -84,22 +84,22 @@ export default function App() {
   }
 
   return (
-    <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+    <div style={{ display: "flex", height: "100vh" }}>
       <Sidebar 
         onNewChat={handleNewChat}
         onHistory={() => setLogsOpen(true)}
         onNewProject={handleNewProject}
       />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", height: "100vh", position: "relative" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", height: "100vh", overflow: "hidden", position: "relative" }}>
       <Header
         explainability={explainability}
         onToggleExplainability={() => setExplainability((v) => !v)}
       />
 
       {/* Main area */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minHeight: 0 }}>
         {/* Chat messages */}
-        <div style={{ flex: 1, overflow: "auto", paddingBottom: "16px" }}>
+        <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", paddingBottom: "16px", minHeight: 0 }}>
           {messages.length === 0 ? (
             /* Empty state */
             <div

@@ -79,11 +79,24 @@ def _call_groq_with_retry(system_prompt: str, query: str) -> str:
                 raise
 
 
-def generate_response(query: str, explainability: bool = True) -> QueryResponse:
+def generate_response(
+    query: str, 
+    explainability: bool = True,
+    file_content: bytes | None = None,
+    file_name: str | None = None
+) -> QueryResponse:
     """
     Generate an answer with optional explainability in a SINGLE generation call.
     This is NOT a post-hoc explanation — reasoning is produced simultaneously.
     """
+    # Simple file handling: if it's a text file, append content to query
+    if file_content and file_name:
+        try:
+            text_content = file_content.decode("utf-8")
+            query = f"Context from file '{file_name}':\n{text_content}\n\nUser Question: {query}"
+        except:
+            query = f"(File '{file_name}' attached but could not be read as text)\n\nUser Question: {query}"
+
     system_prompt = SYSTEM_PROMPT if explainability else SYSTEM_PROMPT_NO_EXPLAIN
     current_date = datetime.datetime.now().strftime("%Y-%m-%d")
     system_prompt = system_prompt.replace("{{CURRENT_DATE}}", current_date)

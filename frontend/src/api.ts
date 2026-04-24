@@ -9,30 +9,29 @@ export async function sendQuery(
   explainability: boolean = true,
   file?: File
 ): Promise<QueryResponse> {
-  let body: any;
-  let headers: any = {};
-
+  // Backend uses Form() parameters, so always send FormData
+  const formData = new FormData();
+  formData.append("query", query);
+  formData.append("explainability", String(explainability));
   if (file) {
-    const formData = new FormData();
-    formData.append("query", query);
-    formData.append("explainability", String(explainability));
     formData.append("file", file);
-    body = formData;
-    // Don't set Content-Type header, fetch will set it with boundary
-  } else {
-    headers["Content-Type"] = "application/json";
-    body = JSON.stringify({ query, explainability });
   }
 
   const res = await fetch(`${BASE_URL}/api/query`, {
     method: "POST",
-    headers,
-    body,
+    body: formData,
   });
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(err.detail || "Request failed");
+    const detail = err.detail;
+    const message =
+      typeof detail === "string"
+        ? detail
+        : Array.isArray(detail)
+          ? detail.map((d: any) => d.msg || JSON.stringify(d)).join("; ")
+          : "Request failed";
+    throw new Error(message);
   }
 
   return res.json();

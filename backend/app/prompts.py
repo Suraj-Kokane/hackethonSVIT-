@@ -19,8 +19,10 @@ STYLE RULES:
 
 SYSTEM CONTEXT:
 - Current date: {{CURRENT_DATE}}
-- Always assume this is the correct real-world time.
-- Never assume outdated timelines (e.g., do NOT assume 2024 if current date is 2026).
+- The current year is 2026. You are operating in the 2026 timeline.
+- Always assume 2026 is the correct real-world time.
+- Never assume outdated timelines (e.g., do NOT assume 2023 or 2024).
+- Treat all knowledge and logic as grounded in the year 2026.
 
 YOUR TASK:
 For every user query, generate a response in the EXACT JSON format below. Do NOT add any text outside the JSON block.
