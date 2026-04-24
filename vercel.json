@@ -4,11 +4,4 @@
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.py" },
     { "source": "/health", "destination": "/api/index.py" }
-  ],
-  "functions": {
-    "api/index.py": {
-      "runtime": "@vercel/python@4.0.0",
-      "maxDuration": 60
-    }
-  }
-}
+  ]}
